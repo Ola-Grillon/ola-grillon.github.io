@@ -1,120 +1,21 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Mobile Payments QA Case Study</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Hanken+Grotesk:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
-<style>
-/* Layout: case-study document, sticky contents rail on wide screens, one column on phones. Terminal-readout styling for real error strings. */
-:root{
- --bg:#f5f7f6; --surface:#ffffff; --fg:#15201e; --muted:#56635f; --line:#d9e0dd;
- --accent:#0b6b55; --accent-soft:#e1f0eb; --readout:#10221d; --readout-fg:#b8f3d9;
- --crit:#b42318; --crit-soft:#fbe7e5; --high:#a15c07; --high-soft:#fdf0dc; --low:#3d5a80; --low-soft:#e6edf6;
- --pass:#0b6b55; --pass-soft:#e1f0eb; --nr:#6b7572; --nr-soft:#eceeed;
- --f-display:"Archivo","Arial Narrow",Arial,sans-serif; --f-body:"HK Grotesk","Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
- --bg:#0f1514; --surface:#161e1c; --fg:#e4ebe8; --muted:#9aa8a3; --line:#2a3633;
- --accent:#4fd1a5; --accent-soft:#163a30; --readout:#07110e; --readout-fg:#8ff0c4;
- --crit:#ff8a7a; --crit-soft:#3d1c19; --high:#f0b35a; --high-soft:#3a2a12; --low:#93b4dc; --low-soft:#1c2a3b;
- --pass:#4fd1a5; --pass-soft:#163a30; --nr:#9aa8a3; --nr-soft:#232c2a; color-scheme:dark}}
-:root[data-theme="dark"]{
- --bg:#0f1514; --surface:#161e1c; --fg:#e4ebe8; --muted:#9aa8a3; --line:#2a3633;
- --accent:#4fd1a5; --accent-soft:#163a30; --readout:#07110e; --readout-fg:#8ff0c4;
- --crit:#ff8a7a; --crit-soft:#3d1c19; --high:#f0b35a; --high-soft:#3a2a12; --low:#93b4dc; --low-soft:#1c2a3b;
- --pass:#4fd1a5; --pass-soft:#163a30; --nr:#9aa8a3; --nr-soft:#232c2a; color-scheme:dark}
-*{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:200px minmax(0,1fr);gap:48px;padding-block:40px 80px}
-nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;font-size:13px}
-nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;counter-reset:s}
-nav.toc a{color:var(--muted);text-decoration:none;display:block;padding:4px 8px;border-radius:4px}
-nav.toc a:hover,nav.toc a:focus-visible{color:var(--fg);background:var(--accent-soft);outline:none}
-main{min-width:0}
-header.hero{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:8px}
-.eyebrow{font:600 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
-h1{font-size:clamp(32px,5vw,52px);font-weight:800;font-stretch:88%;margin:12px 0 14px}
-h2{font-size:28px;font-weight:700;font-stretch:92%;margin:0 0 6px}
-h3{font-size:19px;font-weight:700}
-.lede{font-size:19px;color:var(--muted);max-width:62ch;margin:0}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px 24px;margin:24px 0 0;padding:0}
-.facts div{border-top:2px solid var(--fg);padding-top:8px}
-.facts dt{font:600 11px/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.facts dd{margin:4px 0 0;font-weight:600}
-.note{margin-top:22px;padding:14px 16px;border:1px dashed var(--line);border-radius:6px;font-size:14px;color:var(--muted);max-width:75ch}
-section{padding-top:48px;scroll-margin-top:16px}
-section > p,section > ul{max-width:70ch}
-.sub{color:var(--muted);margin:0 0 20px}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.cols > div{min-width:0}
-.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px}
-.box h3{margin-bottom:8px}
-.box ul{margin:0;padding-left:20px}
-.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
-th{font:600 11px/1.3 var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--bg);white-space:nowrap}
-tr:last-child td{border-bottom:0}
-td.id{font:600 13px var(--f-mono);white-space:nowrap}
-.mono{font-family:var(--f-mono);font-size:13px}
-.pill{display:inline-block;font:600 11px/1 var(--f-mono);letter-spacing:.03em;padding:5px 8px;border-radius:999px;white-space:nowrap}
-.pill.crit{color:var(--crit);background:var(--crit-soft)} .pill.high{color:var(--high);background:var(--high-soft)}
-.pill.low{color:var(--low);background:var(--low-soft)} .pill.med{color:var(--high);background:var(--high-soft)}
-.pill.pass{color:var(--pass);background:var(--pass-soft)} .pill.fail{color:var(--crit);background:var(--crit-soft)} .pill.nr{color:var(--nr);background:var(--nr-soft)}
-details.tc summary{cursor:pointer;font-weight:600;list-style:none}
-details.tc summary::-webkit-details-marker{display:none}
-details.tc summary::before{content:"+";display:inline-block;width:1.1em;font-family:var(--f-mono);color:var(--accent)}
-details.tc[open] summary::before{content:"\2212"}
-details.tc dl{display:grid;grid-template-columns:110px 1fr;gap:4px 12px;margin:10px 0 2px;font-size:13px}
-details.tc dt{color:var(--muted)} details.tc dd{margin:0}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:24px}
-.stat{border-top:2px solid var(--fg);padding-top:8px}
-.stat b{display:block;font:800 36px/1.1 var(--f-display);font-stretch:90%;font-variant-numeric:tabular-nums}
-.stat span{font-size:13px;color:var(--muted)}
-.bar{display:flex;height:14px;border-radius:3px;overflow:hidden;gap:2px;margin:6px 0 8px}
-.seg{display:block;min-width:4px}
-.seg.crit,.sw.crit{background:var(--crit)} .seg.high,.sw.high{background:var(--high)} .seg.low,.sw.low{background:var(--low)}
-.seg.pass,.sw.pass{background:var(--pass)} .seg.fail,.sw.fail{background:var(--crit)} .seg.nr,.sw.nr{background:var(--nr)}
-.legend{list-style:none;display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;padding:0;font-size:13px;color:var(--muted)}
-.runs{font:11px/1.3 var(--f-mono);color:var(--muted);margin-top:4px;white-space:nowrap}
-.legend b{color:var(--fg);font-variant-numeric:tabular-nums}
-.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
-.defects{display:grid;gap:28px}
-article.defect{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.dhead{padding:18px 20px 14px;border-bottom:1px solid var(--line);display:grid;gap:10px}
-.dhead .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
-.dhead .did{font:600 13px var(--f-mono);color:var(--fg)}
-.dbody{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:24px}
-.dbody > div{min-width:0}
-.field{margin-bottom:14px}
-.field h4{font:600 11px/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
-.field p,.field ol{margin:0} .field ol{padding-left:20px}
-.readout{background:var(--readout);color:var(--readout-fg);font:600 13px/1.5 var(--f-mono);padding:10px 12px;border-radius:6px;letter-spacing:.02em;overflow-wrap:anywhere}
-pre.log{background:var(--readout);color:var(--readout-fg);font:12px/1.55 var(--f-mono);padding:12px;border-radius:6px;overflow-x:auto;margin:0;white-space:pre}
-.ra{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.ra > div{min-width:0}
-.ra .exp{border-left:3px solid var(--pass);padding-left:10px} .ra .act{border-left:3px solid var(--crit);padding-left:10px}
-.impact{background:var(--accent-soft);border-radius:6px;padding:12px 14px}
-figure{margin:0 0 14px} figure img{display:block;width:100%;height:auto;border-radius:6px;border:1px solid var(--line);background:var(--bg)}
-figcaption{font-size:12px;color:var(--muted);margin-top:6px}
-.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
-.noev{font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:12px}
-.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.skills div{border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:var(--surface)}
-.skills b{display:block;margin-bottom:4px}
-.skills span{font-size:14px;color:var(--muted)}
-a{color:var(--accent)}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);gap:0;padding-block:24px 60px} nav.toc{display:none} .dbody{grid-template-columns:minmax(0,1fr)} .cols{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:520px){.ra{grid-template-columns:minmax(0,1fr)} details.tc dl{grid-template-columns:minmax(0,1fr)} h2{font-size:24px}}
-@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
-html{scroll-behavior:smooth}
-</style>
-
-<div class="wrap"><nav class="toc" aria-label="Contents"><ol><li><a href="#overview">Overview</a></li><li><a href="#scope">Scope</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#risks">Risk assessment</a></li><li><a href="#strategy">Test strategy</a></li><li><a href="#scenarios">Test scenarios</a></li><li><a href="#cases">Test cases</a></li><li><a href="#execution">Execution</a></li><li><a href="#defects">Defect reports</a></li><li><a href="#rtm">Traceability</a></li><li><a href="#summary">Test summary</a></li><li><a href="#skills">What this shows</a></li></ol></nav><main>
-<header class="hero"><div class="eyebrow">Case study 1 &middot; Banking &amp; Fintech</div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mobile Payments Case Study – Ola Grillon</title>
+<meta name="description" content="QA case study: anonymised mobile wallet payment testing for a France launch. Requirements, risks, test cases, defect reports and traceability.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,600;125,700;125,800&family=Hanken+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/case-study.css">
+</head>
+<body>
+<header class="nav"><div class="wrap"><a class="brand" href="index.html">Ola Grillon<i></i></a><nav><a href="index.html">Home</a><a href="qa.html" class="on">QA & Testing</a><a href="salesforce.html">Salesforce</a><a href="data.html">Data</a><a class="lang" href="fr/qa.html" title="Version française">FR</a></nav></div></header>
+<main class="wrap cs">
+<div class="cs-layout"><aside class="cs-toc" aria-label="Contents"><ol><li><a href="#overview">Overview</a></li><li><a href="#scope">Scope</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#risks">Risk assessment</a></li><li><a href="#strategy">Test strategy</a></li><li><a href="#scenarios">Test scenarios</a></li><li><a href="#cases">Test cases</a></li><li><a href="#execution">Execution</a></li><li><a href="#defects">Defect reports</a></li><li><a href="#rtm">Traceability</a></li><li><a href="#summary">Test summary</a></li><li><a href="#skills">What this shows</a></li></ol></aside><div class="cs-main">
+<div class="cs-hero"><a class="cs-back" href="qa.html">&larr; Back to QA &amp; Testing</a><div class="eyebrow">Case study 1 &middot; Banking &amp; Fintech</div>
 <h1>Mobile wallet payments: France launch testing</h1>
-<p class="lede">Pre-launch and in-market testing of a mobile wallet in France: adding cards, paying in shops and on transit by contactless, and paying inside partner apps. Plus two finance-sector apps: a secure document-sharing app and a corporate banking portal.</p>
+<p class="cs-lede">Pre-launch and in-market testing of a mobile wallet in France: adding cards, paying in shops and on transit by contactless, and paying inside partner apps. Plus two finance-sector apps: a secure document-sharing app and a corporate banking portal.</p>
 <dl class="facts">
 <div><dt>Role</dt><dd>QA tester, manual (crowdtesting)</dd></div>
 <div><dt>Period</dt><dd>2017 to 2018</dd></div>
@@ -124,7 +25,7 @@ html{scroll-behavior:smooth}
 <div><dt>Defects shown</dt><dd>12 (all approved by the client)</dd></div>
 </dl>
 <p class="note"><b>Confidentiality.</b> This work was done under NDA. Client, product, merchant and bank names, accounts, card numbers, locations and internal IDs have been removed. Banks appear as Issuer A to D. Images are cropped and blurred. Requirements and test cases are rewritten in my own words from the test plans and my reports; they are not copies of client documents.</p>
-</header>
+</div>
 <section id="overview"><h2>Project overview</h2><p class="sub">Product, users and business context.</p>
 <div class="cols"><div class="box"><h3>Product</h3><p>A mobile wallet that stores debit and prepaid cards on an Android phone and pays by tapping the phone on a payment terminal, or by choosing the wallet at checkout inside partner merchant apps.</p></div>
 <div class="box"><h3>Users</h3><p>Everyday shoppers and commuters in France, with cards from traditional banks and app-based banks, on a range of Android devices and mobile networks.</p></div>
@@ -166,7 +67,7 @@ html{scroll-behavior:smooth}
 <div class="box"><h3>Approach and priorities</h3><ul><li>Test the highest-risk journeys first: paying at a till and adding a card</li><li>Change one variable at a time (issuer, device, terminal, tokenisation) to isolate the cause</li><li>Repeat each failure before reporting, and at more than one location</li><li>Compare with a working path (another issuer, another wallet) to route the bug to the right team</li></ul><p style="font-size:14px;color:var(--muted);margin:10px 0 0">The client's test cases were short field procedures: install, add the card, make a purchase, record the result. I ran them 133 times and expanded them into the detailed cases below.</p></div>
 <div class="box"><h3>Environments</h3><ul><li>Samsung Galaxy S7 (Android 7.0, 8.0)</li><li>Huawei P8 Lite (Android 6), Huawei P9 Lite (Android 7)</li><li>Apple iPhone 6S (iOS 10.0.2, 11.0.1)</li><li>Windows 10, Chrome</li><li>Carriers: Bouygues Telecom, SFR, Free</li><li>Terminals: Ingenico iPP350, Verifone VX820, rail and tram ticket machines</li><li>Cards: 4 issuers, Visa and Mastercard, debit and prepaid</li></ul></div>
 <div class="box"><h3>Evidence rules</h3><ul><li>Screen recording for every in-app bug</li><li>Phone video of the terminal for every in-store bug</li><li>Android bug report (device log) attached to functional bugs</li><li>App, services and OS versions; card type; amount; terminal model</li></ul>
-<figure style="margin-top:14px;max-width:220px"><img src="evidence/env-nfc-routing.jpg" alt="Android settings screen: Default NFC method set to Android operating system" loading="lazy"><figcaption>Device set-up check before field tests (TC-35).</figcaption></figure></div>
+<figure style="margin-top:14px;max-width:220px"><img src="assets/case-studies/payments/env-nfc-routing.jpg" alt="Android settings screen: Default NFC method set to Android operating system" loading="lazy"><figcaption>Device set-up check before field tests (TC-35).</figcaption></figure></div>
 </div>
 <h3 style="margin:28px 0 10px">Severity scale</h3>
 <div class="tbl"><table><thead><tr><th>Severity</th><th>Meaning</th><th>Example</th></tr></thead><tbody>
@@ -225,7 +126,7 @@ html{scroll-behavior:smooth}
 <tr><td class="id">TC-38</td><td><details class="tc"><summary>Ride booking end to end in the ride-hailing app</summary><dl><dt>Precondition</dt><dd>Correct wallet and services versions; card added</dd><dt>Steps</dt><dd><ol style="margin:0;padding-left:18px"><li>Install the ride app</li><li>book a ride with the wallet</li><li>screenshot every screen</li><li>submit results</li></ol></dd><dt>Test data</dt><dd>Ride-hailing app</dd><dt>Expected</dt><dd>Ride booked and paid</dd></dl></details></td><td>In-app</td><td class="mono">REQ-08, REQ-09</td><td class="mono">P1</td><td><span class="pill fail">Fail</span><div class="runs">3 runs: 0 pass, 3 fail</div></td><td class="mono">D-07, D-08</td></tr>
 </tbody></table></div></section>
 <section id="execution"><h2>Test execution</h2><p class="sub">Two views: the runs recorded in the client's test management tool, and the results of the detailed test cases above.</p>
-<div class="stats"><div class="stat"><b>133</b><span>field test runs, Oct to Nov 2018</span></div><div class="stat"><b>117</b><span>passed (88%)</span></div><div class="stat"><b>16</b><span>failed</span></div><div class="stat"><b>93%</b><span>pass rate for in-store payments (114 of 123)</span></div></div>
+<div class="cs-stats"><div class="cs-stat"><b>133</b><span>field test runs, Oct to Nov 2018</span></div><div class="cs-stat"><b>117</b><span>passed (88%)</span></div><div class="cs-stat"><b>16</b><span>failed</span></div><div class="cs-stat"><b>93%</b><span>pass rate for in-store payments (114 of 123)</span></div></div>
 <h3 style="margin:0 0 10px">Runs in the client's test tool</h3>
 <div class="tbl"><table><thead><tr><th>Client test case</th><th>Mapped to</th><th>Runs</th><th>Passed</th><th>Failed</th></tr></thead><tbody><tr><td>In-store contactless, phone</td><td class="mono">TC-06</td><td class="mono">93</td><td class="mono">87</td><td class="mono">6</td></tr><tr><td>In-store contactless, smartwatch</td><td class="mono">TC-36</td><td class="mono">30</td><td class="mono">27</td><td class="mono">3</td></tr><tr><td>In-app checkout, assigned merchant</td><td class="mono">TC-37</td><td class="mono">7</td><td class="mono">3</td><td class="mono">4</td></tr><tr><td>In-app, ride-hailing</td><td class="mono">TC-38</td><td class="mono">3</td><td class="mono">0</td><td class="mono">3</td></tr><tr><td><b>Total</b></td><td></td><td class="mono"><b>133</b></td><td class="mono"><b>117</b></td><td class="mono"><b>16</b></td></tr></tbody></table></div>
 <p style="font-size:14px;color:var(--muted);margin-top:10px">Every run was approved by the client's test lead. Each in-store run was a real purchase at the assigned store, made with an Android phone or a smartwatch. When the phone slots in the tool were full, runs were logged under other device labels; the testing itself was always on Android phones and the smartwatch.</p>
@@ -242,7 +143,7 @@ html{scroll-behavior:smooth}
 <div class="field"><h4>Error shown</h4><div class="readout">Paiement sans contact refusé</div></div>
 <div class="field impact"><h4>Impact on users and business</h4><p>This is the most damaging kind of payment failure: the customer believes they paid and may walk away, while the merchant has not been paid. It creates disputes at the till and erodes trust in a wallet being launched in a new market.</p></div>
 <div class="field"><h4>Investigation</h4><p>Confirmed with the cashier that the terminal accepts contactless before testing, repeated the attempt, and checked the phone&#x27;s NFC routing setting (see Evidence). Device log attached for developers.</p></div>
-</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="evidence/d01-terminal-patientez.jpg" alt="Terminal stuck on PATIENTEZ after the phone has already shown success." loading="lazy"><figcaption>Terminal stuck on PATIENTEZ after the phone has already shown success.</figcaption></figure></div></div></article>
+</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="assets/case-studies/payments/d01-terminal-patientez.jpg" alt="Terminal stuck on PATIENTEZ after the phone has already shown success." loading="lazy"><figcaption>Terminal stuck on PATIENTEZ after the phone has already shown success.</figcaption></figure></div></div></article>
 <article class="defect" id="d-02"><div class="dhead"><div class="meta"><span class="did">D-02</span><span class="pill crit">Critical</span><span class="pill nr">P1</span><span>In-store NFC</span><span>&middot; Every time</span><span>&middot; 1 approved report, reproduced at 3 merchants</span></div><h3>Payments above EUR 30 are refused after successful on-device verification</h3></div>
 <div class="dbody"><div>
 <div class="field"><h4>Environment</h4><p class="mono" style="font-size:13px">Samsung Galaxy S7, Android 8.0, SFR | Verifone VX820 terminal | Issuer B Mastercard debit | EUR 31.66</p></div>
@@ -254,7 +155,7 @@ html{scroll-behavior:smooth}
 <div class="field"><h4>Investigation</h4><p>Reproduced at a food store, an electronics store and a department store. Recorded the full sequence on video. The device log at the moment of the attempt contains repeated errors while reading the wallet&#x27;s card data (excerpt below); I flagged them for developer triage without claiming them as the root cause.</p></div><div class="field"><h4>Log excerpt (anonymised)</h4><pre class="log">12:51:16.459 E Parcel : Class not found when unmarshalling: [wallet].firstparty.CardInfo
 12:51:16.460 W Bundle : BadParcelableException: ClassNotFoundException when unmarshalling: [wallet].firstparty.CardInfo
 12:51:17.082 E Parcel : Class not found when unmarshalling: [wallet].firstparty.CardInfo</pre></div>
-</div><div><div class="field"><h4>Evidence</h4></div><div class="gallery"><figure><img src="evidence/d02-a.jpg" alt="Terminal asks for EUR 31.66." loading="lazy"><figcaption>Terminal asks for EUR 31.66.</figcaption></figure><figure><img src="evidence/d02-b.jpg" alt="Phone shows the success check mark." loading="lazy"><figcaption>Phone shows the success check mark.</figcaption></figure><figure><img src="evidence/d02-c.jpg" alt="Seconds later the terminal shows PAIEMENT REFUSE." loading="lazy"><figcaption>Seconds later the terminal shows PAIEMENT REFUSE.</figcaption></figure></div></div></div></article>
+</div><div><div class="field"><h4>Evidence</h4></div><div class="gallery"><figure><img src="assets/case-studies/payments/d02-a.jpg" alt="Terminal asks for EUR 31.66." loading="lazy"><figcaption>Terminal asks for EUR 31.66.</figcaption></figure><figure><img src="assets/case-studies/payments/d02-b.jpg" alt="Phone shows the success check mark." loading="lazy"><figcaption>Phone shows the success check mark.</figcaption></figure><figure><img src="assets/case-studies/payments/d02-c.jpg" alt="Seconds later the terminal shows PAIEMENT REFUSE." loading="lazy"><figcaption>Seconds later the terminal shows PAIEMENT REFUSE.</figcaption></figure></div></div></div></article>
 <article class="defect" id="d-03"><div class="dhead"><div class="meta"><span class="did">D-03</span><span class="pill crit">Critical</span><span class="pill nr">P1</span><span>Transit</span><span>&middot; Every time</span><span>&middot; 1 approved report, rated very valuable</span></div><h3>Rail ticket machines do not detect the phone at all</h3></div>
 <div class="dbody"><div>
 <div class="field"><h4>Environment</h4><p class="mono" style="font-size:13px">Samsung Galaxy S7 (Android 8.0), Huawei P8 Lite (Android 6), Huawei P9 Lite (Android 7) | Issuers A, B, C Mastercard debit | 4 stations | EUR 1.77</p></div>
@@ -274,7 +175,7 @@ html{scroll-behavior:smooth}
 <div class="field"><h4>Error shown</h4><div class="readout">Paiement sans contact refusé / Opération impossible</div></div>
 <div class="field impact"><h4>Impact on users and business</h4><p>One bank&#x27;s customers are excluded from transit payments. Without an issuer comparison this would look like a terminal fault and go to the wrong team.</p></div>
 <div class="field"><h4>Investigation</h4><p>Comparing two issuers at the same terminal, minutes apart, removed the terminal and the device as causes and routed the bug to the issuer integration.</p></div>
-</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="evidence/d04-transit.jpg" alt="EUR 1.70 ticket, then Opération impossible." loading="lazy"><figcaption>EUR 1.70 ticket, then Opération impossible.</figcaption></figure></div></div></article>
+</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="assets/case-studies/payments/d04-transit.jpg" alt="EUR 1.70 ticket, then Opération impossible." loading="lazy"><figcaption>EUR 1.70 ticket, then Opération impossible.</figcaption></figure></div></div></article>
 <article class="defect" id="d-05"><div class="dhead"><div class="meta"><span class="did">D-05</span><span class="pill crit">Critical</span><span class="pill nr">P1</span><span>Provisioning</span><span>&middot; Every time</span><span>&middot; 1 approved report</span></div><h3>Issuer D Visa debit card cannot be added: verification ends in a generic error</h3></div>
 <div class="dbody"><div>
 <div class="field"><h4>Environment</h4><p class="mono" style="font-size:13px">Samsung Galaxy S7, Android 8.0, SFR | Issuer D Visa debit</p></div>
@@ -284,7 +185,7 @@ html{scroll-behavior:smooth}
 <div class="field"><h4>Error shown</h4><div class="readout">Double-check your card details. Something&#x27;s not right. Please double-check the details and try again.</div></div>
 <div class="field impact"><h4>Impact on users and business</h4><p>Onboarding blocker: without a card there is no payment. The message tells the user to re-check details that are correct, which sends them in circles and drives support contacts.</p></div>
 <div class="field"><h4>Investigation</h4><p>Added the same card to a competing wallet at the same time and it worked. That ruled out wrong card details and pointed to this wallet&#x27;s integration with Issuer D.</p></div>
-</div><div><div class="field"><h4>Evidence</h4></div><div class="gallery"><figure><img src="evidence/d05-a.jpg" alt="Contacting your bank." loading="lazy"><figcaption>Contacting your bank.</figcaption></figure><figure><img src="evidence/d05-b.jpg" alt="Generic error while the bank is verifying." loading="lazy"><figcaption>Generic error while the bank is verifying.</figcaption></figure></div></div></div></article>
+</div><div><div class="field"><h4>Evidence</h4></div><div class="gallery"><figure><img src="assets/case-studies/payments/d05-a.jpg" alt="Contacting your bank." loading="lazy"><figcaption>Contacting your bank.</figcaption></figure><figure><img src="assets/case-studies/payments/d05-b.jpg" alt="Generic error while the bank is verifying." loading="lazy"><figcaption>Generic error while the bank is verifying.</figcaption></figure></div></div></div></article>
 <article class="defect" id="d-06"><div class="dhead"><div class="meta"><span class="did">D-06</span><span class="pill crit">Critical</span><span class="pill nr">P1</span><span>In-app</span><span>&middot; Every time</span><span>&middot; 2 approved reports (Issuers A and C)</span></div><h3>Non-tokenised cards appear at merchant checkout but are rejected with Not accepted here</h3></div>
 <div class="dbody"><div>
 <div class="field"><h4>Environment</h4><p class="mono" style="font-size:13px">Samsung Galaxy S7, Android 8.0, Bouygues | Fashion retail merchant app | Issuers A and C, non-tokenised</p></div>
@@ -324,7 +225,7 @@ html{scroll-behavior:smooth}
 <div class="field"><h4>Error shown</h4><div class="readout">Your payment has been declined. Do you want to try another card?</div></div>
 <div class="field impact"><h4>Impact on users and business</h4><p>Travel bookings are high-value, time-sensitive purchases. A decline at the last step loses the sale and may lose the fare.</p></div>
 <div class="field"><h4>Investigation</h4><p>Reproduced on a second airline app, which showed the cause was on the wallet or card side rather than one merchant. The decline dialog does keep the booking and offer a retry, which I recorded as a pass (TC-25).</p></div>
-</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="evidence/d09-declined.jpg" alt="Decline at the final payment step." loading="lazy"><figcaption>Decline at the final payment step.</figcaption></figure></div></div></article>
+</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="assets/case-studies/payments/d09-declined.jpg" alt="Decline at the final payment step." loading="lazy"><figcaption>Decline at the final payment step.</figcaption></figure></div></div></article>
 <article class="defect" id="d-10"><div class="dhead"><div class="meta"><span class="did">D-10</span><span class="pill high">High</span><span class="pill nr">P1</span><span>Security</span><span>&middot; 5 of 5</span><span>&middot; 1 approved report, re-test: not fixed</span></div><h3>Access code can be reset without entering the current code</h3></div>
 <div class="dbody"><div>
 <div class="field"><h4>Environment</h4><p class="mono" style="font-size:13px">Apple iPhone 6S, iOS 11.0.1 | Secure document-sharing app for finance and legal teams</p></div>
@@ -334,7 +235,7 @@ html{scroll-behavior:smooth}
 <div class="field"><h4>Error shown</h4><div class="readout">None</div></div>
 <div class="field impact"><h4>Impact on users and business</h4><p>Anyone holding the phone can take over the app. The confirmation dialog states that a reset removes all servers, data rooms and local documents, so the data is wiped rather than exposed, but an unauthorised person can still wipe a user&#x27;s confidential working files and lock them out.</p></div>
 <div class="field"><h4>Investigation</h4><p>Read the confirmation dialog closely to judge the real risk (wipe and takeover, not data exposure) and stated that in the report. On the fix build I re-tested on iOS 10.0.2: not fixed.</p></div>
-</div><div><div class="field"><h4>Evidence</h4></div><div class="gallery"><figure><img src="evidence/d10-a.jpg" alt="Reset is offered with only a Yes or No confirmation." loading="lazy"><figcaption>Reset is offered with only a Yes or No confirmation.</figcaption></figure><figure><img src="evidence/d10-b.jpg" alt="Straight to Enter a new access code." loading="lazy"><figcaption>Straight to Enter a new access code.</figcaption></figure></div></div></div></article>
+</div><div><div class="field"><h4>Evidence</h4></div><div class="gallery"><figure><img src="assets/case-studies/payments/d10-a.jpg" alt="Reset is offered with only a Yes or No confirmation." loading="lazy"><figcaption>Reset is offered with only a Yes or No confirmation.</figcaption></figure><figure><img src="assets/case-studies/payments/d10-b.jpg" alt="Straight to Enter a new access code." loading="lazy"><figcaption>Straight to Enter a new access code.</figcaption></figure></div></div></div></article>
 <article class="defect" id="d-11"><div class="dhead"><div class="meta"><span class="did">D-11</span><span class="pill high">High</span><span class="pill nr">P2</span><span>Session</span><span>&middot; 5 of 5</span><span>&middot; 1 approved report, re-test: not fixed</span></div><h3>Server password prompt keeps returning after entry, navigation and relaunch</h3></div>
 <div class="dbody"><div>
 <div class="field"><h4>Environment</h4><p class="mono" style="font-size:13px">Apple iPhone 6S, iOS 11.0.1 | Secure document-sharing app</p></div>
@@ -344,7 +245,7 @@ html{scroll-behavior:smooth}
 <div class="field"><h4>Error shown</h4><div class="readout">Password required</div></div>
 <div class="field impact"><h4>Impact on users and business</h4><p>Users cannot reach documents without clearing repeated prompts, and repeated credential prompts teach users to type passwords without reading, which is a security habit to avoid.</p></div>
 <div class="field"><h4>Investigation</h4><p>Checked three exits (back navigation, other pages, full relaunch) to show the prompt state is never cleared. Re-tested on the fix build: not fixed.</p></div>
-</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="evidence/d11-raw-check.jpg" alt="Password required dialog over the server list (server details blurred)." loading="lazy"><figcaption>Password required dialog over the server list (server details blurred).</figcaption></figure></div></div></article>
+</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="assets/case-studies/payments/d11-raw-check.jpg" alt="Password required dialog over the server list (server details blurred)." loading="lazy"><figcaption>Password required dialog over the server list (server details blurred).</figcaption></figure></div></div></article>
 <article class="defect" id="d-12"><div class="dhead"><div class="meta"><span class="did">D-12</span><span class="pill low">Low</span><span class="pill nr">P3</span><span>Localisation</span><span>&middot; Every time</span><span>&middot; 2 approved reports</span></div><h3>French locale: page and help text left in English, internal resource keys visible</h3></div>
 <div class="dbody"><div>
 <div class="field"><h4>Environment</h4><p class="mono" style="font-size:13px">Windows 10 64-bit, Chrome | Corporate banking portal, French locale</p></div>
@@ -354,7 +255,7 @@ html{scroll-behavior:smooth}
 <div class="field"><h4>Error shown</h4><div class="readout">None</div></div>
 <div class="field impact"><h4>Impact on users and business</h4><p>Low functional impact, but this portal serves corporate treasury clients. Visible key names suggest missing string resources that may affect other locales too.</p></div>
 <div class="field"><h4>Investigation</h4><p>Supplied the recommended French string with each report so the fix could be applied directly. The duplicate list showed more than a dozen similar reports, which pointed to a systemic gap; I recommended a check for untranslated strings before release.</p></div>
-</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="evidence/d12-locale.jpg" alt="French locale with English text and visible key names (product name blurred)." loading="lazy"><figcaption>French locale with English text and visible key names (product name blurred).</figcaption></figure></div></div></article>
+</div><div><div class="field"><h4>Evidence</h4></div><figure><img src="assets/case-studies/payments/d12-locale.jpg" alt="French locale with English text and visible key names (product name blurred)." loading="lazy"><figcaption>French locale with English text and visible key names (product name blurred).</figcaption></figure></div></div></article>
 </div></section>
 <section id="rtm"><h2>Requirements traceability matrix</h2><p class="sub">Every requirement is covered by at least one test case; failures trace to a defect.</p><div class="tbl"><table><thead><tr><th>Requirement</th><th>Test cases</th><th>Defects</th><th>Status</th></tr></thead><tbody>
 <tr><td><span class="mono">REQ-01</span> Card provisioning</td><td class="mono">TC-01, TC-02, TC-05</td><td class="mono">D-05</td><td><span class="pill fail">Failed</span></td></tr>
@@ -372,7 +273,7 @@ html{scroll-behavior:smooth}
 <tr><td><span class="mono">REQ-13</span> Complete French localisation</td><td class="mono">TC-32, TC-33, TC-34</td><td class="mono">D-12</td><td><span class="pill fail">Failed</span></td></tr>
 </tbody></table></div></section>
 <section id="summary"><h2>Test summary report</h2><p class="sub">Coverage, defect statistics, remaining risks and recommendations.</p>
-<div class="stats"><div class="stat"><b>13/13</b><span>requirements covered</span></div><div class="stat"><b>133</b><span>field runs, 88% passed</span></div><div class="stat"><b>12</b><span>defects, from 16 approved reports</span></div><div class="stat"><b>9</b><span>critical</span></div><div class="stat"><b>5</b><span>reports rated very valuable by the client</span></div></div>
+<div class="cs-stats"><div class="cs-stat"><b>13/13</b><span>requirements covered</span></div><div class="cs-stat"><b>133</b><span>field runs, 88% passed</span></div><div class="cs-stat"><b>12</b><span>defects, from 16 approved reports</span></div><div class="cs-stat"><b>9</b><span>critical</span></div><div class="cs-stat"><b>5</b><span>reports rated very valuable by the client</span></div></div>
 <h3 style="margin:8px 0 4px">Defects by severity</h3>
 <div class="bar"><span class="seg crit" style="flex:9" title="Critical: 9"></span><span class="seg high" style="flex:2" title="High: 2"></span><span class="seg low" style="flex:1" title="Low: 1"></span></div><ul class="legend"><li><span class="sw crit"></span>Critical <b>9</b></li><li><span class="sw high"></span>High <b>2</b></li><li><span class="sw low"></span>Low <b>1</b></li></ul>
 <div class="tbl" style="margin-top:20px"><table><thead><tr><th>Area</th><th>Defects</th><th>Pattern</th></tr></thead><tbody>
@@ -394,5 +295,8 @@ html{scroll-behavior:smooth}
 <div><b>Explain business impact</b><span>An impact statement for each defect, plus launch recommendations.</span></div>
 </div></section>
 <p style="margin-top:48px;font-size:13px;color:var(--muted)">Ola Grillon &middot; QA case study 1 of 3</p>
-</main></div>
-</body></html>
+</div></div>
+</main>
+<footer><div class="wrap"><span>© 2026 Ola Grillon · Orléans, France</span><span><a href="mailto:olabisioyinloye1@gmail.com">Email</a> · <a href="https://www.linkedin.com/in/ola-grillon/">LinkedIn</a> · <a href="https://github.com/Ola-Grillon">GitHub</a></span></div></footer>
+</body>
+</html>

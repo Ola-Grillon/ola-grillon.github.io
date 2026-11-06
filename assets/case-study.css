@@ -1,0 +1,86 @@
+/* Case study pages. Uses the tokens and fonts from style.css (black, white, yellow). */
+.cs{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--crit:#b42318;--crit-soft:#fbe7e5;--high:#9a5b00;--high-soft:#fdf0dc;--low:#2f4f7a;--low-soft:#e6edf6;--pass:#18794e;--pass-soft:#e3f4ea;--nr:#5e5e5e;--nr-soft:#efefed}
+.cs-layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:44px;padding:40px 0 20px}
+.cs-main{min-width:0}
+.cs-toc{position:sticky;top:84px;align-self:start;font-size:14px}
+.cs-toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.cs-toc a{color:var(--muted);text-decoration:none;display:block;padding:4px 8px;border-radius:6px;font-weight:500}
+.cs-toc a:hover,.cs-toc a:focus-visible{color:var(--ink);background:var(--yellow-soft);outline:none}
+.cs-back{display:inline-block;margin:0 0 18px;font-weight:700;text-decoration:none;box-shadow:inset 0 -2px 0 var(--yellow);font-size:15px}
+.cs-hero{border-bottom:1px solid var(--line);padding-bottom:28px}
+.cs h1{font-size:40px;line-height:1.08;margin:6px 0 14px;font-weight:800}
+.cs h2{font-size:28px}
+.cs h3{font-size:19px;font-weight:800;margin:0}
+.cs-lede{color:var(--muted);font-size:19px;max-width:720px;margin:0}
+.cs .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px 22px;margin:24px 0 0;padding:0}
+.cs .facts div{border-top:3px solid var(--yellow);padding-top:8px}
+.cs .facts dt{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
+.cs .facts dd{margin:4px 0 0;font-weight:700}
+.cs .note{margin-top:22px;padding:14px 16px;border:1px dashed var(--line);border-radius:10px;font-size:15px;color:var(--muted);max-width:760px}
+.cs section{padding:44px 0 0;scroll-margin-top:80px}
+.cs section > p,.cs section > ul{max-width:720px}
+.cs .sub{color:var(--muted);margin:0 0 20px}
+.cs .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cs .cols > div{min-width:0}
+.cs .box{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.cs .box h3{margin-bottom:8px}
+.cs .box ul{margin:0;padding-left:20px}
+.cs .box li::marker{color:#b89600}
+.cs .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.cs table{border-collapse:collapse;width:100%;font-size:15px}
+.cs th,.cs td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+.cs th{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);background:var(--alt);white-space:nowrap}
+.cs tr:last-child td{border-bottom:0}
+.cs td.id{font:700 13px var(--mono);white-space:nowrap}
+.cs .mono{font-family:var(--mono);font-size:13px}
+.cs .pill{display:inline-block;font:700 11px/1 var(--mono);padding:5px 8px;border-radius:999px;white-space:nowrap}
+.cs .pill.crit{color:var(--crit);background:var(--crit-soft)}.cs .pill.high,.cs .pill.med{color:var(--high);background:var(--high-soft)}
+.cs .pill.low{color:var(--low);background:var(--low-soft)}.cs .pill.pass{color:var(--pass);background:var(--pass-soft)}
+.cs .pill.fail{color:var(--crit);background:var(--crit-soft)}.cs .pill.nr{color:var(--nr);background:var(--nr-soft)}
+.cs .runs{font:11px/1.3 var(--mono);color:var(--muted);margin-top:4px;white-space:nowrap}
+.cs details.tc summary{cursor:pointer;font-weight:700;list-style:none}
+.cs details.tc summary::-webkit-details-marker{display:none}
+.cs details.tc summary::before{content:"+";display:inline-block;width:1.1em;font-family:var(--mono);color:#b89600}
+.cs details.tc[open] summary::before{content:"\2212"}
+.cs details.tc dl{display:grid;grid-template-columns:110px 1fr;gap:4px 12px;margin:10px 0 2px;font-size:14px}
+.cs details.tc dt{color:var(--muted)}.cs details.tc dd{margin:0}
+.cs-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.cs-stat{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:18px;border-top:4px solid var(--yellow)}
+.cs-stat b{display:block;font-family:var(--head);font-stretch:125%;font-size:30px;line-height:1.1;font-weight:800;font-variant-numeric:tabular-nums}
+.cs-stat span{color:var(--muted);font-size:14px}
+.cs .bar{display:flex;height:14px;border-radius:4px;overflow:hidden;gap:2px;margin:6px 0 8px}
+.cs .seg{display:block;min-width:4px}
+.cs .seg.crit,.cs .sw.crit,.cs .seg.fail,.cs .sw.fail{background:var(--crit)}.cs .seg.high,.cs .sw.high{background:var(--high)}
+.cs .seg.low,.cs .sw.low{background:var(--low)}.cs .seg.pass,.cs .sw.pass{background:var(--pass)}.cs .seg.nr,.cs .sw.nr{background:#b5b5b0}
+.cs .legend{list-style:none;display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;padding:0;font-size:14px;color:var(--muted)}
+.cs .legend b{color:var(--ink)}
+.cs .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.cs .defects{display:grid;gap:26px}
+.cs article.defect{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg)}
+.cs .dhead{padding:18px 22px 14px;border-bottom:1px solid var(--line);display:grid;gap:10px;background:var(--alt)}
+.cs .dhead .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--muted)}
+.cs .dhead .did{font:700 13px var(--mono);color:var(--ink);background:var(--yellow);padding:4px 8px;border-radius:6px}
+.cs .dbody{padding:18px 22px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:24px}
+.cs .dbody > div{min-width:0}
+.cs .field{margin-bottom:14px}
+.cs .field h4{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+.cs .field p,.cs .field ol{margin:0}.cs .field ol{padding-left:20px}
+.cs .readout{background:var(--ink);color:var(--yellow);font:700 13px/1.5 var(--mono);padding:10px 12px;border-radius:8px;overflow-wrap:anywhere}
+.cs pre.log{background:var(--ink);color:#f2f2ee;font:12px/1.55 var(--mono);padding:12px;border-radius:8px;overflow-x:auto;margin:0;white-space:pre}
+.cs .ra{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cs .ra > div{min-width:0}
+.cs .ra .exp{border-left:3px solid var(--pass);padding-left:10px}.cs .ra .act{border-left:3px solid var(--crit);padding-left:10px}
+.cs .impact{background:var(--yellow-soft);border-radius:10px;padding:12px 14px}
+.cs figure{margin:0 0 14px}
+.cs figure img{display:block;width:100%;max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:var(--alt)}
+.cs figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+.cs .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.cs .noev{font-size:14px;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:12px}
+.cs .skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.cs .skills div{border:1px solid var(--line);border-radius:14px;padding:16px 18px;border-top:4px solid var(--yellow)}
+.cs .skills b{display:block;margin-bottom:4px}
+.cs .skills span{font-size:15px;color:var(--muted)}
+.cs :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (max-width:900px){.cs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding-top:24px}.cs-toc{display:none}.cs .dbody,.cs .cols{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.cs h1{font-size:30px}.cs .ra{grid-template-columns:minmax(0,1fr)}.cs details.tc dl{grid-template-columns:minmax(0,1fr)}.cs-stats{grid-template-columns:1fr 1fr}}
+.cs .eyebrow{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
