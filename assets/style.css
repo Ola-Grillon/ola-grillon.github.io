@@ -56,3 +56,15 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding:28px 0;color:var
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
 footer a{color:var(--ink)}
 @media (max-width:680px){header.nav .wrap{flex-direction:column;align-items:flex-start;height:auto;padding-top:10px;padding-bottom:8px;gap:4px}nav{gap:16px;overflow-x:auto;white-space:nowrap;width:100%;padding-bottom:2px}nav a{font-size:14px}.hero{grid-template-columns:1fr;padding-top:34px;gap:22px}.hero img{width:112px;height:112px}.hero h1{font-size:36px}.page-head h1{font-size:32px}.stats{grid-template-columns:1fr 1fr}.stat b{font-size:26px}h2{font-size:25px}}
+/* QA page: About text + verified track record panel */
+.qa-intro{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:36px;align-items:start;margin-top:8px}
+.qa-about .lede{max-width:none}
+.track-record{background:var(--alt);border-radius:14px;padding:24px}
+.track-record h3{margin:0 0 6px;font-size:20px;font-weight:800}
+.track-sub{color:var(--muted);margin:0 0 16px;font-size:15px}
+.track-shots{display:flex;flex-direction:column;gap:12px}
+.track-shot{display:block;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg);transition:border-color .15s}
+.track-shot:hover,.track-shot:focus-visible{border-color:var(--ink)}
+.track-shot img{display:block;width:100%;height:auto}
+.track-caption{color:var(--muted);font-size:13px;margin:12px 0 0}
+@media (max-width:900px){.qa-intro{grid-template-columns:minmax(0,1fr);gap:28px}}
