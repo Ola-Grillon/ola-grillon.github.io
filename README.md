@@ -1,6 +1,6 @@
 # ola-grillon.github.io
 
-Portfolio of **Ola Grillon** – QA Engineer & Salesforce Consultant · ISTQB CTFL · 5x Salesforce Certified.
+Portfolio of **Ola Grillon** – Salesforce Consultant & QA Tester · 5x Salesforce Certified · ISTQB CTFL.
 English and French.
 
 Live site: https://ola-grillon.github.io (French: /fr/)
