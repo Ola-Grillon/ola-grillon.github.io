@@ -68,3 +68,6 @@ footer a{color:var(--ink)}
 .track-shot img{display:block;width:100%;height:auto}
 .track-caption{color:var(--muted);font-size:13px;margin:12px 0 0}
 @media (max-width:900px){.qa-intro{grid-template-columns:minmax(0,1fr);gap:28px}}
+/* Menu on small phones: tighter spacing so all items fit; wrap to a second line rather than hide items */
+@media (max-width:440px){nav{gap:11px}nav a{font-size:13px}.lang{padding:2px 9px;font-size:12px}}
+@media (max-width:380px){nav{flex-wrap:wrap;row-gap:6px;overflow-x:visible}}
